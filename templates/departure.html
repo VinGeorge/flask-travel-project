@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block container %}
+   
+   <nav class="navbar navbar-expand-lg navbar-light bg-light">
+           <a class="navbar-brand" href="/">{{ title }} </a>
+           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                   aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+               <span class="navbar-toggler-icon"></span>
+           </button>
+
+               <div class="collapse navbar-collapse" id="navbarNav">
+                   <ul class="navbar-nav" data-test="navigation">
+
+                       {% for link, title in departures.items() %}
+
+                       {% set active_link = "/departure/"+link+"/" %}
+
+                       {% if request.path == active_link %}{% set c = 'active' %}{% endif %}
+
+                       <li  class="nav-item {{ c }}">
+                           <a class="nav-link" href="/departure/{{ link }}" data-test="navlink">{{ title }} </a>
+                       </li>
+
+                       {% endfor %}
+
+                   </ul>
+
+               </div>
+       </nav>
+
+    {% for link, title in departures.items() %}
+
+    {% set active_link = "/departure/"+link+"/" %}
+
+    {% if request.path == active_link %}
+
+    <h1 class="display-5 mt-4">Летим из <span data-test="from"> {{ title[3:] }}</span></h1>
+
+    <p class="mb-4" ><span data-test="tourcount">Найдено тура {{ tours|count }} </span> от  <span data-test="pricemin">
+        {{ prices|min }}</span> до <span data-test="pricemax">
+        {{ prices|max }}</span> и от <span data-test="nightsmax">
+        {{ nights|min }}</span> до <span data-test="nightsmax">
+        {{ nights|max }}</span> ночей</p>
+
+    {% endif %}
+
+    {% endfor %}
+
+          <div class="row mt-5" data-test="cards">
+
+              {% for value in tours %}
+              {% set active_link = "/departure/"+value['departure']+"/" %}
+              {% if request.path == active_link %}
+
+                <div class="col-4" data-test="card">
+                    <div class="card mb-3" >
+                        <img src={{ value['picture'] }} auto=format fit=crop w=800 q=60 class="card-img-top img-fluid" data-test="picture">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ value['title'] }}</h5>
+                            <p class="card-text"> {{ value['description']|truncate(100, True) }}</p>
+                            <a href="/tour/1" class="btn btn-sm btn-primary" data-test="tourlink">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+
+              {% endif %}
+              {% endfor %}
+
+{% endblock %}
